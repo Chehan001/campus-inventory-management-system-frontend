@@ -37,8 +37,9 @@ const Login = () => {
                         <div className="logo-circle">
                             <span>CIMS</span>
                         </div>
-                        <h1>Welcome Back</h1>
-                        <p>Enter your credentials to continue</p>
+                        <h1>Welcome</h1>
+                        <p>Campus Inventory management System</p>
+                       
                     </div>
 
                     <form onSubmit={onSubmit}>
