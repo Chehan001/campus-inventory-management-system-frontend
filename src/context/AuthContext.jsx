@@ -11,10 +11,7 @@ export const AuthProvider = ({ children }) => {
         const checkUser = async () => {
             const token = localStorage.getItem('token');
             if (token) {
-                // Determine user from token or verify via API if needed.
-                // For simplicity, we just trust the stored user info mostly or decode token
-                // But better to parse the token logic or fetch /me.
-                // Assuming we stored user info in localStorage for this prototype or just persists token.
+                
                 const storedUser = JSON.parse(localStorage.getItem('user'));
                 if (storedUser) setUser(storedUser);
                 axios.defaults.headers.common['x-auth-token'] = token;
