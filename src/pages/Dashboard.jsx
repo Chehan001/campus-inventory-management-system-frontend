@@ -5,7 +5,7 @@ import InventoryForm from '../components/InventoryForm';
 import ViewInventory from '../pages/ViewInventory';
 import '../styles/Dashboard.css';
 
-// Home Component
+// Home Component 
 const DashboardHome = () => (
   <div className="section-container">
     <h2 className="page-title">Welcome to Campus Inventory Management System Dashboard</h2>
@@ -186,17 +186,14 @@ const LecturerFormContainer = () => {
 
 // Main Dashboard Component
 const Dashboard = () => {
-  const { logout, user } = useContext(AuthContext);
+  const { logout } = useContext(AuthContext);
   
   return (
     <div className="dashboard-wrapper">
       <header className="dashboard-header">
-        <div className="dashboard-header-content">
+        <div className="dashboard-header-content">     
           <h1 className="dashboard-title">
             CIMS Dashboard
-            {user?.role && (
-              <span className="user-role-badge">{user.role}</span>
-            )}
           </h1>
           
           <button onClick={logout} className="logout-btn">
