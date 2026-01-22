@@ -1,22 +1,21 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { Routes, Route, Link, useParams, Outlet } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import InventoryForm from '../components/InventoryForm';
-import axios from 'axios';
+import ViewInventory from '../pages/ViewInventory';
 import '../styles/Dashboard.css';
 
 // Home Component
 const DashboardHome = () => (
   <div className="section-container">
-    <h2 className="page-title">Welcome to Your Dashboard</h2>
+    <h2 className="page-title">Welcome to Campus Inventory Management System Dashboard</h2>
     
     <div className="card-grid">
       <Link to="lecturer-hall" style={{ textDecoration: 'none' }}>
         <div className="feature-card feature-card-blue" style={{ animationDelay: '0.1s' }}>
-          <div className="feature-card-icon">🎓</div>
-          <h3 className="feature-card-title">Lecturer Hall</h3>
+          <h3 className="feature-card-title" data-text="Lecturer Hall">Lecturer Hall</h3>
           <p className="feature-card-description">
-            Manage desks, chairs, smart boards, and projectors
+            Manage desks, chairs, smart boards, and projectors for educational spaces
           </p>
           <div className="feature-card-arrow">
             <span>Explore</span>
@@ -27,10 +26,9 @@ const DashboardHome = () => (
 
       <Link to="lab" style={{ textDecoration: 'none' }}>
         <div className="feature-card feature-card-purple" style={{ animationDelay: '0.2s' }}>
-          <div className="feature-card-icon">🔬</div>
-          <h3 className="feature-card-title">Laboratory</h3>
+          <h3 className="feature-card-title" data-text="Laboratory">Laboratory</h3>
           <p className="feature-card-description">
-            Manage equipment, chemicals, and lab resources
+            Manage equipment, chemicals, and lab resources across departments
           </p>
           <div className="feature-card-arrow">
             <span>Explore</span>
@@ -41,10 +39,9 @@ const DashboardHome = () => (
 
       <Link to="common" style={{ textDecoration: 'none' }}>
         <div className="feature-card feature-card-green" style={{ animationDelay: '0.3s' }}>
-          <div className="feature-card-icon">📦</div>
-          <h3 className="feature-card-title">Common Items</h3>
+          <h3 className="feature-card-title" data-text="Common Items">Common Items</h3>
           <p className="feature-card-description">
-            Manage general inventory and shared resources
+            Manage general inventory and shared resources organization-wide
           </p>
           <div className="feature-card-arrow">
             <span>Explore</span>
@@ -57,7 +54,7 @@ const DashboardHome = () => (
     <div className="view-all-container">
       <Link to="view-all" style={{ textDecoration: 'none' }}>
         <button className="view-all-btn">
-          📊 View All Inventory
+          View All Inventory
         </button>
       </Link>
     </div>
@@ -71,17 +68,16 @@ const LabHub = () => (
     
     <div className="dept-card-grid">
       {[
-        { name: 'pst', label: 'PST', className: 'dept-card-red', icon: '⚗️' },
-        { name: 'fst', label: 'FST', className: 'dept-card-yellow', icon: '🧪' },
-        { name: 'nr', label: 'NR', className: 'dept-card-teal', icon: '🌿' },
-        { name: 'sport', label: 'Sport', className: 'dept-card-orange', icon: '⚽' }
+        { name: 'pst', label: 'PST' },
+        { name: 'fst', label: 'FST' },
+        { name: 'nr', label: 'NR' },
+        { name: 'sport', label: 'Sport' }
       ].map((dept, idx) => (
         <Link key={dept.name} to={dept.name} style={{ textDecoration: 'none' }}>
           <div 
-            className={`dept-card ${dept.className}`}
+            className="dept-card"
             style={{ animationDelay: `${idx * 0.1}s` }}
           >
-            <div className="dept-card-icon">{dept.icon}</div>
             <div className="dept-card-label">{dept.label}</div>
           </div>
         </Link>
@@ -94,11 +90,11 @@ const LabHub = () => (
 const DeptHub = () => {
   const { dept } = useParams();
   const categories = [
-    { name: 'Equipment', icon: '🔧' },
-    { name: 'Chemical', icon: '🧪' },
-    { name: 'Furniture', icon: '🪑' },
-    { name: 'Computer', icon: '💻' },
-    { name: 'Other', icon: '📌' }
+    { name: 'Equipment' },
+    { name: 'Chemical' },
+    { name: 'Furniture' },
+    { name: 'Computer' },
+    { name: 'Other' }
   ];
 
   return (
@@ -114,7 +110,6 @@ const DeptHub = () => {
               className="category-btn category-btn-purple"
               style={{ animationDelay: `${idx * 0.1}s` }}
             >
-              <span className="category-btn-icon">{cat.icon}</span>
               {cat.name}
             </button>
           </Link>
@@ -141,10 +136,10 @@ const FormContainer = () => {
 // Lecturer Hall Hub Component
 const LecturerHallHub = () => {
   const items = [
-    { name: 'Desk', icon: '🪑' },
-    { name: 'Chair', icon: '💺' },
-    { name: 'SmartBoard', icon: '📺' },
-    { name: 'Projector', icon: '📽️' }
+    { name: 'Desk' },
+    { name: 'Chair' },
+    { name: 'SmartBoard' },
+    { name: 'Projector' }
   ];
 
   return (
@@ -158,7 +153,6 @@ const LecturerHallHub = () => {
               className="category-btn category-btn-blue"
               style={{ animationDelay: `${idx * 0.1}s` }}
             >
-              <span className="category-btn-icon">{item.icon}</span>
               {item.name}
             </button>
           </Link>
@@ -190,79 +184,6 @@ const LecturerFormContainer = () => {
   );
 };
 
-// View Inventory Component
-const ViewInventory = () => {
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const { user } = useContext(AuthContext);
-
-  useEffect(() => {
-    const fetchItems = async () => {
-      try {
-        const res = await axios.get('/api/inventory');
-        setItems(res.data);
-      } catch (error) {
-        console.error('Error fetching inventory:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchItems();
-  }, []);
-
-  return (
-    <div className="section-container">
-      <h3 className="section-title">📋 Complete Inventory List</h3>
-      
-      {loading ? (
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
-        </div>
-      ) : (
-        <div className="inventory-table-container">
-          <div className="inventory-table-wrapper">
-            <table className="inventory-table">
-              <thead>
-                <tr>
-                  <th>Serial ID</th>
-                  <th>Category</th>
-                  <th>Sub Category</th>
-                  <th>Location</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {items.map((item, idx) => (
-                  <tr 
-                    key={item._id}
-                    style={{ animationDelay: `${idx * 0.05}s` }}
-                  >
-                    <td>{item.serialNumber}</td>
-                    <td>{item.category}</td>
-                    <td>{item.subCategory}</td>
-                    <td>
-                      {item.location.faculty} - {item.location.room}
-                    </td>
-                    <td>
-                      <span className={`status-badge ${
-                        item.status === 'Active' 
-                          ? 'status-badge-active' 
-                          : 'status-badge-inactive'
-                      }`}>
-                        {item.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
 // Main Dashboard Component
 const Dashboard = () => {
   const { logout, user } = useContext(AuthContext);
@@ -272,7 +193,6 @@ const Dashboard = () => {
       <header className="dashboard-header">
         <div className="dashboard-header-content">
           <h1 className="dashboard-title">
-            <span className="dashboard-title-icon">🎯</span>
             CIMS Dashboard
             {user?.role && (
               <span className="user-role-badge">{user.role}</span>
@@ -280,7 +200,7 @@ const Dashboard = () => {
           </h1>
           
           <button onClick={logout} className="logout-btn">
-            🚪 Logout
+            Logout
           </button>
         </div>
       </header>

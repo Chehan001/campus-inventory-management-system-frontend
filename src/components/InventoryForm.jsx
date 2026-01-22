@@ -232,7 +232,7 @@ const InventoryForm = ({ category, subCategory, department, facultyProp }) => {
                                 </>
                             ) : (
                                 <>
-                                    <span>📦</span>
+                                    <span></span>
                                     Submit & Generate Barcodes
                                 </>
                             )}
